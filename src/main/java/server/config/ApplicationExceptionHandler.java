@@ -43,10 +43,10 @@ public class ApplicationExceptionHandler {
         return handler("Invalid argument", HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler({RedisConnectionFailureException.class, RedisCommandTimeoutException.class})
-//    public ResponseEntity<Map<String, String>> handleRedisException(RedisConnectionFailureException e) {
-//        return handler("Authentication storage is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
-//    }
+    @ExceptionHandler({RedisConnectionFailureException.class, RedisCommandTimeoutException.class})
+    public ResponseEntity<Map<String, String>> handleRedisException(RedisConnectionFailureException e) {
+        return handler("Authentication storage is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+    }
 
     private ResponseEntity<Map<String, String>> handler(
             String message, HttpStatus status) {
