@@ -1,7 +1,7 @@
 package server.mapper;
 
 import org.springframework.stereotype.Component;
-import server.dto.request.point.PointRequest;
+import server.dto.request.PointRequest;
 import server.dto.response.PointResponse;
 import server.entity.PointEntity;
 import server.entity.UserEntity;

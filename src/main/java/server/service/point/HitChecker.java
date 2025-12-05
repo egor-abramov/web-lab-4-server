@@ -1,7 +1,7 @@
 package server.service.point;
 
 import org.springframework.stereotype.Component;
-import server.dto.request.point.PointRequest;
+import server.dto.request.PointRequest;
 
 @Component
 class HitChecker {

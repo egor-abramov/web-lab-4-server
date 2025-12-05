@@ -1,4 +1,4 @@
-package server.dto.request.point;
+package server.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

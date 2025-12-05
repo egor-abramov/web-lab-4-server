@@ -8,8 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import server.dto.AuthTokens;
 import server.dto.UserDTO;
-import server.dto.request.auth.LoginRequest;
-import server.dto.request.auth.RegisterRequest;
+import server.dto.request.AuthRequest;
 import server.exception.InvalidTokenException;
 import server.exception.UserAlreadyExistsException;
 import server.exception.UserNotFoundException;
@@ -26,7 +25,7 @@ public class AuthService {
     private final UserMapper userMapper;
     private final RefreshTokenService refreshTokenService;
 
-    public void register(RegisterRequest request) {
+    public void register(AuthRequest request) {
         if (userService.isUserExists(request.getLogin())) {
             throw new UserAlreadyExistsException("User with login: " + request.getLogin() + " already exists");
         }
@@ -41,7 +40,7 @@ public class AuthService {
         }
     }
 
-    public AuthTokens login(LoginRequest request) {
+    public AuthTokens login(AuthRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getLogin(),
                 request.getPassword()

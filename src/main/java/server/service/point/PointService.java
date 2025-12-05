@@ -1,7 +1,7 @@
 package server.service.point;
 
 import server.dto.UserDTO;
-import server.dto.request.point.PointRequest;
+import server.dto.request.PointRequest;
 import server.dto.response.PointResponse;
 import server.entity.PointEntity;
 import server.entity.UserEntity;

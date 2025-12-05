@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import server.config.JwtConstants;
 import server.dto.AuthTokens;
 import server.dto.UserDTO;
-import server.dto.request.auth.LoginRequest;
-import server.dto.request.auth.RegisterRequest;
+import server.dto.request.AuthRequest;
 import server.dto.response.AuthResponse;
 import jakarta.validation.Valid;
 import server.service.auth.AuthService;
@@ -28,7 +27,7 @@ public class AuthController {
     private final JwtConstants jwtConstants;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
         AuthTokens authTokens = authService.login(request);
         ResponseCookie refreshCookie = refreshTokenService.generateRefreshCookie(authTokens.getRefreshToken());
         AuthResponse responseBody = new AuthResponse(
@@ -42,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest request) {
+    public ResponseEntity<String> register(@RequestBody @Valid AuthRequest request) {
         authService.register(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

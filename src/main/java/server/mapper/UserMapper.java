@@ -2,7 +2,7 @@ package server.mapper;
 
 import org.springframework.stereotype.Component;
 import server.dto.UserDTO;
-import server.dto.request.auth.AuthRequest;
+import server.dto.request.AuthRequest;
 import server.entity.UserEntity;
 
 @Component

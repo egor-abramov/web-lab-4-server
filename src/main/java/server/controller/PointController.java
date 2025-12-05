@@ -1,7 +1,7 @@
 package server.controller;
 
 import org.springframework.security.core.userdetails.User;
-import server.dto.request.point.PointRequest;
+import server.dto.request.PointRequest;
 import server.dto.UserDTO;
 import server.dto.response.PointResponse;
 import server.service.point.PointService;
