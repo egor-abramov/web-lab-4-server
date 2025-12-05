@@ -15,14 +15,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  redis:
-    host: redis
-    port: 6379
-  autoconfigure:
-    redis:
-      enable-keyspace-events: true
   data:
     redis:
+      host: redis
+      port: 6379
       timeout: 2000
       connect-timeout: 2000
 
