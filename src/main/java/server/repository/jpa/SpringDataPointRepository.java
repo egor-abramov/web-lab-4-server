@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 interface SpringDataPointRepository extends JpaRepository<PointEntity, Long> {
-    void deleteByUser(UserEntity user);
+    void deleteByUserId(Long id);
 
-    List<PointEntity> findByUser(UserEntity user);
+    List<PointEntity> findByUserId(Long id);
 }

@@ -6,7 +6,6 @@ import server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,13 +15,8 @@ public class JpaUserRepository implements UserRepository {
     private final SpringDataUserRepository jpaRepository;
 
     @Override
-    public void deleteAll() {
-        jpaRepository.deleteAll();
-    }
-
-    @Override
-    public List<UserEntity> findAll() {
-        return jpaRepository.findAll();
+    public Optional<UserEntity> findById(Long id) {
+        return jpaRepository.findById(id);
     }
 
     @Override
@@ -31,15 +25,20 @@ public class JpaUserRepository implements UserRepository {
     }
 
     @Override
-    public UserEntity save(UserEntity user) {
-        if (existsByLogin(user.getLogin())) {
+    public void save(UserEntity user) {
+        if (existsById(user.getId())) {
             throw new RuntimeException("User with login: " + user.getLogin() + " already exist");
         }
-        return jpaRepository.save(user);
+        jpaRepository.save(user);
     }
 
     @Override
     public boolean existsByLogin(String login) {
         return findByLogin(login).isPresent();
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return findById(id).isPresent();
     }
 }

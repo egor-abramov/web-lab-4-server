@@ -9,11 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import server.dto.UserDTO;
-import server.service.user.UserService;
 
 import java.io.IOException;
 
@@ -21,7 +19,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,14 +31,14 @@ public class AuthFilter extends OncePerRequestFilter {
 
         String jwt = authHeader.substring(7);
         try {
-            String userLogin = jwtService.getLoginFromToken(jwt);
+            String login = jwtService.getLogin(jwt);
+            Long id = jwtService.getId(jwt);
 
-            if (userLogin != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDTO user = userService.getByLogin(userLogin);
-                if (jwtService.isTokenValid(jwt, user.getLogin())) {
-                    UserDetails userDetails = userService.loadUserByUsername(userLogin);
+            if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (jwtService.isTokenValid(jwt, login)) {
+                    UserDTO user = new UserDTO(id, login);
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, null);
+                            user, null, null);
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 } else {
                     response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid JWT");

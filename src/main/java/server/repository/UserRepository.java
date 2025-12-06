@@ -2,17 +2,16 @@ package server.repository;
 
 import server.entity.UserEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
-    void deleteAll();
-
-    List<UserEntity> findAll();
-
     Optional<UserEntity> findByLogin(String login);
 
-    UserEntity save(UserEntity user);
+    Optional<UserEntity> findById(Long id);
 
-    boolean existsByLogin(String username);
+    void save(UserEntity user);
+
+    boolean existsByLogin(String userName);
+
+    boolean existsById(Long id);
 }

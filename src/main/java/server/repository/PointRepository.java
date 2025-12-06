@@ -8,7 +8,7 @@ import java.util.List;
 public interface PointRepository {
     PointEntity save(PointEntity point);
 
-    void deleteByUser(UserEntity user);
+    void deleteByUserId(Long id);
 
-    List<PointEntity> findByUser(UserEntity user);
+    List<PointEntity> findByUserId(Long id);
 }

@@ -63,9 +63,8 @@ public class AuthController {
     }
 
     @PostMapping
-    public ResponseEntity<String> logout(@AuthenticationPrincipal User user) {
-        UserDTO userDTO = new UserDTO(user.getUsername(), user.getPassword());
-        authService.logout(userDTO);
+    public ResponseEntity<String> logout(@AuthenticationPrincipal UserDTO user) {
+        authService.logout(user);
         ResponseCookie dropRefreshCookie = refreshTokenService.dropRefreshCookie();
 
         return ResponseEntity.ok()

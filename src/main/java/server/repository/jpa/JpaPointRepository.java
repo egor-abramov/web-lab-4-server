@@ -23,12 +23,12 @@ public class JpaPointRepository implements PointRepository {
 
     @Override
     @Transactional
-    public void deleteByUser(UserEntity user) {
-        jpaRepository.deleteByUser(user);
+    public void deleteByUserId(Long id) {
+        jpaRepository.deleteByUserId(id);
     }
 
     @Override
-    public List<PointEntity> findByUser(UserEntity user) {
-        return jpaRepository.findByUser(user);
+    public List<PointEntity> findByUserId(Long id) {
+        return jpaRepository.findByUserId(id);
     }
 }

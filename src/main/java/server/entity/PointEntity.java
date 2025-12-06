@@ -37,7 +37,6 @@ public class PointEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     @NonNull
     private UserEntity user;
 }

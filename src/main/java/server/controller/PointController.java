@@ -1,6 +1,5 @@
 package server.controller;
 
-import org.springframework.security.core.userdetails.User;
 import server.dto.request.PointRequest;
 import server.dto.UserDTO;
 import server.dto.response.PointResponse;
@@ -21,23 +20,20 @@ public class PointController {
     private final PointService pointService;
 
     @GetMapping("")
-    public ResponseEntity<List<PointResponse>> getPoints(@AuthenticationPrincipal User user) {
-        UserDTO userDTO = new UserDTO(user.getUsername(), user.getPassword());
-        List<PointResponse> pointResponses = pointService.getByUser(userDTO);
+    public ResponseEntity<List<PointResponse>> getPoints(@AuthenticationPrincipal UserDTO user) {
+        List<PointResponse> pointResponses = pointService.getByUser(user);
         return ResponseEntity.ok(pointResponses);
     }
 
     @PostMapping("/process")
-    public ResponseEntity<PointResponse> processPoint(@RequestBody @Valid PointRequest point, @AuthenticationPrincipal User user) {
-        UserDTO userDTO = new UserDTO(user.getUsername(), user.getPassword());
-        PointResponse response = pointService.processPoint(point, userDTO);
+    public ResponseEntity<PointResponse> processPoint(@RequestBody @Valid PointRequest point, @AuthenticationPrincipal UserDTO user) {
+        PointResponse response = pointService.processPoint(point, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<Void> clear(@AuthenticationPrincipal User user) {
-        UserDTO userDTO = new UserDTO(user.getUsername(), user.getPassword());
-        pointService.deleteByUser(userDTO);
+    public ResponseEntity<Void> clear(@AuthenticationPrincipal UserDTO user) {
+        pointService.deleteByUser(user);
         return ResponseEntity.noContent().build();
     }
 }

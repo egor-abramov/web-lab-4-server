@@ -9,6 +9,7 @@ import server.entity.UserEntity;
 public class UserMapper {
     public UserDTO toDTO(UserEntity user) {
         return new UserDTO(
+                user.getId(),
                 user.getLogin(),
                 user.getPassword()
         );

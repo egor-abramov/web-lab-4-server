@@ -1,14 +1,10 @@
 package server.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -27,8 +23,4 @@ public class UserEntity {
     @Column(nullable = false, length = 256)
     @NonNull
     private String password;
-
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<PointEntity> points = new ArrayList<>();
 }

@@ -27,13 +27,13 @@ public class AuthService {
 
     public void register(AuthRequest request) {
         if (userService.isUserExists(request.getLogin())) {
-            throw new UserAlreadyExistsException("User with login: " + request.getLogin() + " already exists");
+            throw new UserAlreadyExistsException("User with user name: " + request.getLogin() + " already exists");
         }
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         UserDTO user = userMapper.toDTO(request);
         user.setPassword(encodedPassword);
 
-        try{
+        try {
             userService.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException("User already exists");
@@ -54,19 +54,19 @@ public class AuthService {
     }
 
     public AuthTokens refresh(String refreshToken) {
-        String login = jwtService.getLoginFromToken(refreshToken);
-        if(!refreshToken.equals(refreshTokenService.getByLogin(login))) {
+        String login = jwtService.getLogin(refreshToken);
+        if (!refreshToken.equals(refreshTokenService.getByLogin(login))) {
             throw new UserNotFoundException("Token revoked");
         }
-        if(!jwtService.isTokenValid(refreshToken, login)) {
+        if (!jwtService.isTokenValid(refreshToken, login)) {
             throw new InvalidTokenException("Invalid token");
         }
 
         UserDTO user = userService.getByLogin(login);
         String newAccessToken = jwtService.generateAccessToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user);
-        refreshTokenService.deleteByLogin(login);
-        refreshTokenService.save(login, newRefreshToken);
+        refreshTokenService.deleteByLogin(user.getLogin());
+        refreshTokenService.save(user.getLogin(), newRefreshToken);
         return new AuthTokens(newAccessToken, newRefreshToken);
     }
 

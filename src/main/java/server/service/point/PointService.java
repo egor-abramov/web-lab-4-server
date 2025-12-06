@@ -8,7 +8,6 @@ import server.entity.UserEntity;
 import server.exception.UserNotFoundException;
 import server.exception.ValidationException;
 import server.mapper.PointMapper;
-import server.mapper.UserMapper;
 import server.repository.PointRepository;
 import server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ public class PointService {
     private final PointRepository pointRepository;
     private final UserRepository userRepository;
     private final PointMapper pointMapper;
-    private final UserMapper userMapper;
     private final HitChecker hitChecker;
     private final PointValidator pointValidator;
 
@@ -33,8 +31,8 @@ public class PointService {
         pointValidator.validate(point);
         boolean isHit = hitChecker.checkHit(point);
 
-        UserEntity userEntity = userRepository.findByLogin(user.getLogin())
-                .orElseThrow(() -> new UserNotFoundException("No such user with login: " + user.getLogin()));
+        UserEntity userEntity = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("No such user"));
         PointEntity pointEntity = pointMapper.toEntity(point, userEntity);
         pointEntity.setHit(isHit);
         pointEntity.setUtcTime(ZonedDateTime.now(Clock.systemUTC()).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
@@ -45,16 +43,19 @@ public class PointService {
     }
 
     public List<PointResponse> getByUser(UserDTO user) {
-        UserEntity userEntity = userRepository.findByLogin(user.getLogin())
-                .orElseThrow(() -> new UserNotFoundException("No such user with login: " + user.getLogin()));
-
-        List<PointEntity> pointEntities = pointRepository.findByUser(userEntity);
-        return pointEntities.stream().map(pointMapper::toResponse).toList();
+        try{
+            List<PointEntity> pointEntities = pointRepository.findByUserId(user.getId());
+            return pointEntities.stream().map(pointMapper::toResponse).toList();
+        } catch (Exception e) {
+            throw new UserNotFoundException("No such user: " + user.getLogin());
+        }
     }
 
     public void deleteByUser(UserDTO user) {
-        UserEntity userEntity = userRepository.findByLogin(user.getLogin())
-                .orElseThrow(() -> new UserNotFoundException("No such user with login: " + user.getLogin()));
-        pointRepository.deleteByUser(userEntity);
+        try {
+            pointRepository.deleteByUserId(user.getId());
+        } catch (Exception e) {
+            throw new UserNotFoundException("No such user: " + user.getLogin());
+        }
     }
 }

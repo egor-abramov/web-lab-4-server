@@ -1,7 +1,6 @@
 package server.service.auth;
 
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +29,10 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String generateToken(String login, long expiration) {
+    private String generateToken(UserDTO user, long expiration) {
         return Jwts.builder()
-                .subject(login)
+                .subject(user.getLogin())
+                .claim("id", user.getId())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
@@ -40,38 +40,45 @@ public class JwtService {
     }
 
     public String generateAccessToken(UserDTO user) {
-        return generateToken(user.getLogin(), constants.getAccessExpiration());
+        return generateToken(user, constants.getAccessExpiration());
     }
 
     public String generateRefreshToken(UserDTO user) {
-        return generateToken(user.getLogin(), constants.getRefreshExpiration());
+        return generateToken(user, constants.getRefreshExpiration());
     }
 
-    public String getLoginFromToken(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
+    public String getLogin(String token) {
+        return getClaim(token)
                 .getPayload()
                 .getSubject();
     }
 
     private boolean isTokenExpired(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
+        return getClaim(token)
                 .getPayload()
                 .getExpiration()
                 .before(new Date());
     }
 
+    public Long getId(String token) {
+        return getClaim(token)
+                .getPayload()
+                .get("id", Long.class);
+    }
+
     public boolean isTokenValid(String token, String login) {
         try {
-            return login.equals(getLoginFromToken(token)) && !isTokenExpired(token);
+            return login.equals(getLogin(token)) && !isTokenExpired(token);
         } catch (JwtException e) {
             log.warn("Invalid JWT: {}", e.getMessage());
             return false;
         }
+    }
+
+    private Jws<Claims> getClaim(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token);
     }
 }
