@@ -27,7 +27,7 @@ public class AuthService {
 
     public void register(AuthRequest request) {
         if (userService.isUserExists(request.getLogin())) {
-            throw new UserAlreadyExistsException("User with user name: " + request.getLogin() + " already exists");
+            throw new UserAlreadyExistsException("User already exists");
         }
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         UserDTO user = userMapper.toDTO(request);

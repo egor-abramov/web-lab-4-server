@@ -3,7 +3,6 @@ package server.repository.jpa;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import server.entity.PointEntity;
-import server.entity.UserEntity;
 import server.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

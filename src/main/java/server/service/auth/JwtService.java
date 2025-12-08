@@ -4,8 +4,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import server.config.JwtConstants;
@@ -21,8 +19,6 @@ public class JwtService {
 
     @Value("${jwt.key}")
     private String secretKey;
-
-    private final Logger log = LoggerFactory.getLogger(JwtService.class);
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -70,7 +66,6 @@ public class JwtService {
         try {
             return login.equals(getLogin(token)) && !isTokenExpired(token);
         } catch (JwtException e) {
-            log.warn("Invalid JWT: {}", e.getMessage());
             return false;
         }
     }
