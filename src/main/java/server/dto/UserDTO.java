@@ -18,8 +18,12 @@ public class UserDTO {
     @NonNull
     private String password;
 
-    public UserDTO(Long id, String login) {
+    @NonNull
+    private UserRole role;
+
+    public UserDTO(Long id, String login, UserRole role) {
         this.login = login;
         this.id = id;
+        this.role = role;
     }
 }

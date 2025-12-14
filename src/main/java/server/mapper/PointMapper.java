@@ -14,8 +14,8 @@ public class PointMapper {
                 point.getX(),
                 point.getY(),
                 point.getR(),
-                point.getUtcTime(),
-                point.isHit()
+                point.isHit(),
+                point.getUtcTime().toString()
         );
     }
 

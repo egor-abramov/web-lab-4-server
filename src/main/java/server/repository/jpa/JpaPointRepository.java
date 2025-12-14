@@ -7,6 +7,7 @@ import server.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
@@ -29,5 +30,15 @@ public class JpaPointRepository implements PointRepository {
     @Override
     public List<PointEntity> findByUserId(Long id) {
         return jpaRepository.findByUserId(id);
+    }
+
+    @Override
+    public Long countByUserIdInRange(Long id, ZonedDateTime minDate, ZonedDateTime maxDate) {
+        return jpaRepository.countByUserIdInRange(id, minDate, maxDate);
+    }
+
+    @Override
+    public Long countHitByUserIdInRange(Long id, ZonedDateTime minDate, ZonedDateTime maxDate) {
+        return jpaRepository.countHitsByUserIdInRange(id, minDate, maxDate);
     }
 }

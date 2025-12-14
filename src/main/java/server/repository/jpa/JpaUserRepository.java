@@ -1,11 +1,13 @@
 package server.repository.jpa;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import server.dto.UserDTO;
 import server.entity.UserEntity;
 import server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -40,5 +42,15 @@ public class JpaUserRepository implements UserRepository {
     @Override
     public boolean existsById(Long id) {
         return findById(id).isPresent();
+    }
+
+    @Override
+    public List<UserEntity> getAll() {
+        return jpaRepository.findAll();
+    }
+
+    @Override
+    public boolean isAdminExists() {
+        return jpaRepository.isAdminExists();
     }
 }

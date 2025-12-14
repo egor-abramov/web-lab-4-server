@@ -11,6 +11,8 @@ import server.exception.UserNotFoundException;
 import server.mapper.UserMapper;
 import server.repository.UserRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
@@ -36,6 +38,14 @@ public class UserService implements UserDetailsService {
     public void save(UserDTO userDTO) {
         UserEntity userEntity = userMapper.toEntity(userDTO);
         userRepository.save(userEntity);
+    }
+
+    public List<UserDTO> getAll() {
+        return userRepository.getAll().stream().map(userMapper::toDTO).toList();
+    }
+
+    public boolean isAdminExists() {
+        return userRepository.isAdminExists();
     }
 
     @Override

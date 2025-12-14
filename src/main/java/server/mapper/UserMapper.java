@@ -2,6 +2,7 @@ package server.mapper;
 
 import org.springframework.stereotype.Component;
 import server.dto.UserDTO;
+import server.dto.UserRole;
 import server.dto.request.AuthRequest;
 import server.entity.UserEntity;
 
@@ -11,21 +12,24 @@ public class UserMapper {
         return new UserDTO(
                 user.getId(),
                 user.getLogin(),
-                user.getPassword()
+                user.getPassword(),
+                UserRole.valueOf(user.getRole())
         );
     }
 
     public UserDTO toDTO(AuthRequest request) {
         return new UserDTO(
                 request.getLogin(),
-                request.getPassword()
+                request.getPassword(),
+                UserRole.USER
         );
     }
 
     public UserEntity toEntity(UserDTO user) {
         return new UserEntity(
                 user.getLogin(),
-                user.getPassword()
+                user.getPassword(),
+                user.getRole().name()
         );
     }
 }

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 @Entity
 @Table(name = "points")
 @Data
@@ -32,7 +35,7 @@ public class PointEntity {
     private boolean isHit;
 
     @Column(nullable = false)
-    private String utcTime;
+    private ZonedDateTime utcTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

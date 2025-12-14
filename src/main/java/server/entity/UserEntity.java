@@ -23,4 +23,8 @@ public class UserEntity {
     @Column(nullable = false, length = 256)
     @NonNull
     private String password;
+
+    @Column(nullable = false)
+    @NonNull
+    private String role;
 }

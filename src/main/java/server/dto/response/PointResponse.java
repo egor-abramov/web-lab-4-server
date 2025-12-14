@@ -12,7 +12,6 @@ public class PointResponse {
     private float x;
     private float y;
     private float r;
-    private String time;
     private boolean isHit;
-
+    private String time;
 }

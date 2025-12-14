@@ -1,5 +1,6 @@
 package server.service.point;
 
+import org.springframework.transaction.annotation.Transactional;
 import server.dto.UserDTO;
 import server.dto.request.PointRequest;
 import server.dto.response.PointResponse;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -35,7 +37,7 @@ public class PointService {
                 .orElseThrow(() -> new UserNotFoundException("No such user"));
         PointEntity pointEntity = pointMapper.toEntity(point, userEntity);
         pointEntity.setHit(isHit);
-        pointEntity.setUtcTime(ZonedDateTime.now(Clock.systemUTC()).format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        pointEntity.setUtcTime(ZonedDateTime.now(ZoneId.of("UTC")));
 
         pointEntity = pointRepository.save(pointEntity);
 
@@ -51,9 +53,23 @@ public class PointService {
         }
     }
 
+    @Transactional
     public void deleteByUser(UserDTO user) {
         try {
             pointRepository.deleteByUserId(user.getId());
+        } catch (Exception e) {
+            throw new UserNotFoundException("No such user: " + user.getLogin());
+        }
+    }
+
+    public Float getHitPercentageInRangeByUser(UserDTO user, ZonedDateTime minDate, ZonedDateTime maxDate) {
+        try {
+            float attemptsCount = (float) pointRepository.countByUserIdInRange(user.getId(), minDate, maxDate);
+            float hitsCount = (float) pointRepository.countHitByUserIdInRange(user.getId(), minDate, maxDate);
+            if(attemptsCount == 0) {
+                return 0F;
+            }
+            return (float) Math.round(hitsCount / attemptsCount * 100) / 100F;
         } catch (Exception e) {
             throw new UserNotFoundException("No such user: " + user.getLogin());
         }
