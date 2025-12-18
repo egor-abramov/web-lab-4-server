@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import server.dto.UserDTO;
 import server.dto.UserRole;
 import server.dto.request.AuthRequest;
+import server.dto.response.AdminStatisticResponse;
 import server.exception.UserAlreadyExistsException;
 import server.mapper.UserMapper;
 import server.service.point.PointService;
@@ -43,8 +44,8 @@ public class AdminService {
         }
     }
 
-    public Map<String, Float> getStatistics(String minDateStr, String maxDateStr) {
-        Map<String, Float> response = new HashMap<>();
+    public AdminStatisticResponse getStatistics(String minDateStr, String maxDateStr) {
+        AdminStatisticResponse response = new AdminStatisticResponse();
 
         try {
             ZonedDateTime minDate;
@@ -64,7 +65,7 @@ public class AdminService {
 
             for (UserDTO user: userService.getAll()) {
                 Float hitPercentage = pointService.getHitPercentageInRangeByUser(user, minDate, maxDate);
-                response.put(user.getLogin(), hitPercentage);
+                response.addUserStatistic(user, hitPercentage);
             }
 
             return response;

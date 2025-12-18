@@ -8,56 +8,54 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import server.dto.response.ErrorResponse;
 import server.exception.InvalidTokenException;
 import server.exception.UserAlreadyExistsException;
 import server.exception.UserNotFoundException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(ValidationException e) {
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(ValidationException e) {
         return baseHandler(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
         return baseHandler(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<Map<String, String>> handleInvalidTokenException(InvalidTokenException e) {
+    public ResponseEntity<ErrorResponse> handleInvalidTokenException(InvalidTokenException e) {
         return baseHandler(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, String>> handleUserAlreadyExists(UserAlreadyExistsException e) {
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException e) {
         return baseHandler(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        ErrorResponse errors = new ErrorResponse();
 
         e.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
+            errors.addError(error.getField(), error.getDefaultMessage());
         });
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     @ExceptionHandler({RedisConnectionFailureException.class, RedisCommandTimeoutException.class})
-    public ResponseEntity<Map<String, String>> handleRedisException(RedisConnectionFailureException e) {
+    public ResponseEntity<ErrorResponse> handleRedisException(RedisConnectionFailureException e) {
         return baseHandler("Authentication storage is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    private ResponseEntity<Map<String, String>> baseHandler(
+    private ResponseEntity<ErrorResponse> baseHandler(
             String message, HttpStatus status) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("error", message);
+        ErrorResponse errors = new ErrorResponse();
+        errors.addError("error", message);
         return ResponseEntity.status(status).body(errors);
     }
 }
