@@ -40,9 +40,7 @@ public class ApplicationExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
         ErrorResponse errors = new ErrorResponse();
 
-        e.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.addError(error.getField(), error.getDefaultMessage());
-        });
+        e.getBindingResult().getFieldErrors().forEach(error -> errors.addError(error.getField(), error.getDefaultMessage()));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }

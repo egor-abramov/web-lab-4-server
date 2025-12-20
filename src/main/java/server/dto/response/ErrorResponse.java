@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 @NoArgsConstructor
 public class ErrorResponse {
-    private Map<String, String> errors;
+    private final Map<String, String> errors = new HashMap<>();
 
     public void addError(String error, String message) {
         errors.put(error, message);
